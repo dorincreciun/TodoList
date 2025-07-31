@@ -22,7 +22,7 @@ app.use(helmet());
 // Configurare CORS
 const allowedOrigins = process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(',')
-    : ['http://localhost:5173']; // fallback default
+    : ['http://localhost:5173'];
 
 app.use(cors({
   origin: allowedOrigins,
