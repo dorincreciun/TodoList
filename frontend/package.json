@@ -8,11 +8,13 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "gen:api": "openapi-typescript https://todolist-rx9i.onrender.com/api-docs/ -o ./src/shared/api/schema.ts --root-types"
+    "gen:api": "openapi-typescript https://todolist-rx9i.onrender.com/api-docs.json -o ./src/shared/api/schema.ts --root-types"
   },
   "dependencies": {
+    "openapi-fetch": "^0.14.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "react-router": "^7.7.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",
