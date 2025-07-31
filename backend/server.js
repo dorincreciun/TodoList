@@ -63,6 +63,12 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, {
   customSiteTitle: 'Todo List API Documentation'
 }));
 
+// Endpoint pentru specificația OpenAPI în format JSON
+app.get('/api-docs.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpecs);
+});
+
 // Ruta de health check
 app.get('/api/health', (req, res) => {
   res.json({
