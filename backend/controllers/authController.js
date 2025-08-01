@@ -1,10 +1,17 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-// Generare JWT token
-const generateToken = (userId) => {
+// Generare JWT access token
+const generateAccessToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN
+    expiresIn: process.env.JWT_EXPIRES_IN || '15m'
+  });
+};
+
+// Generare JWT refresh token
+const generateRefreshToken = (userId) => {
+  return jwt.sign({ userId, type: 'refresh' }, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d'
   });
 };
 
@@ -36,8 +43,9 @@ const register = async (req, res) => {
 
     await user.save();
 
-    // Generează token
-    const token = generateToken(user._id);
+    // Generează token-uri
+    const accessToken = generateAccessToken(user._id);
+    const refreshToken = generateRefreshToken(user._id);
 
     // Actualizează ultima conectare
     user.lastLogin = new Date();
@@ -48,7 +56,8 @@ const register = async (req, res) => {
       message: 'Utilizator înregistrat cu succes',
       data: {
         user: user.toPublicJSON(),
-        token
+        accessToken,
+        refreshToken
       }
     });
   } catch (error) {
@@ -93,8 +102,9 @@ const login = async (req, res) => {
       });
     }
 
-    // Generează token
-    const token = generateToken(user._id);
+    // Generează token-uri
+    const accessToken = generateAccessToken(user._id);
+    const refreshToken = generateRefreshToken(user._id);
 
     // Actualizează ultima conectare
     user.lastLogin = new Date();
@@ -105,7 +115,8 @@ const login = async (req, res) => {
       message: 'Autentificare reușită',
       data: {
         user: user.toPublicJSON(),
-        token
+        accessToken,
+        refreshToken
       }
     });
   } catch (error) {
@@ -113,6 +124,71 @@ const login = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Eroare la autentificare'
+    });
+  }
+};
+
+// Reîmprospătare token
+const refreshToken = async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      return res.status(400).json({
+        success: false,
+        message: 'Refresh token este obligatoriu'
+      });
+    }
+
+    // Verifică refresh token-ul
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET);
+    
+    if (decoded.type !== 'refresh') {
+      return res.status(401).json({
+        success: false,
+        message: 'Token invalid'
+      });
+    }
+
+    // Găsește utilizatorul
+    const user = await User.findById(decoded.userId);
+    
+    if (!user || !user.isActive) {
+      return res.status(401).json({
+        success: false,
+        message: 'Utilizator invalid sau inactiv'
+      });
+    }
+
+    // Generează un nou access token
+    const newAccessToken = generateAccessToken(user._id);
+
+    res.json({
+      success: true,
+      message: 'Token reîmprospătat cu succes',
+      data: {
+        accessToken: newAccessToken
+      }
+    });
+  } catch (error) {
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({
+        success: false,
+        message: 'Refresh token invalid'
+      });
+    }
+    
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({
+        success: false,
+        message: 'Refresh token expirat'
+      });
+    }
+
+    console.error('Eroare refresh token:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Eroare la reîmprospătarea token-ului'
     });
   }
 };
@@ -239,5 +315,6 @@ module.exports = {
   logout,
   getProfile,
   updateProfile,
-  changePassword
+  changePassword,
+  refreshToken
 }; 

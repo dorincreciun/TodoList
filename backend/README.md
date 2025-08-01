@@ -6,7 +6,8 @@ Un server REST API complet pentru gestionarea unei aplicații Todo List cu auten
 
 ### Autentificare și Utilizatori
 - ✅ Înregistrare utilizator nou
-- ✅ Autentificare cu JWT
+- ✅ Autentificare cu JWT (Access Token + Refresh Token)
+- ✅ Reîmprospătare automată a token-ului de acces
 - ✅ Deconectare utilizator
 - ✅ Gestionare profil utilizator
 - ✅ Schimbare parolă
@@ -83,7 +84,9 @@ MONGODB_URI=mongodb://localhost:27017/todo-list
 
 # Configurare JWT
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
-JWT_EXPIRES_IN=7d
+JWT_EXPIRES_IN=15m
+JWT_REFRESH_SECRET=your-super-secret-refresh-jwt-key-change-this-in-production
+JWT_REFRESH_EXPIRES_IN=7d
 
 # Configurare Rate Limiting
 RATE_LIMIT_WINDOW_MS=900000
@@ -223,13 +226,31 @@ backend/
 
 ## 🔒 Securitate
 
-- **JWT Authentication** - Autentificare stateless sigură
+- **JWT Authentication** - Autentificare stateless sigură cu Access Token și Refresh Token
 - **Password Hashing** - Parole hash-uite cu bcrypt
 - **Rate Limiting** - Protecție împotriva atacurilor brute force
 - **Input Validation** - Validare strictă a datelor de intrare
 - **CORS** - Configurare securizată pentru cross-origin requests
 - **Helmet** - Headers de securitate HTTP
 - **Error Handling** - Gestionare sigură a erorilor
+
+## 🔐 Sistemul de Token-uri
+
+### Access Token
+- **Durată**: 15 minute (configurabilă prin `JWT_EXPIRES_IN`)
+- **Utilizare**: Pentru autentificarea la API endpoints
+- **Securitate**: Durată scurtă pentru a minimiza riscul în caz de compromitere
+
+### Refresh Token
+- **Durată**: 7 zile (configurabilă prin `JWT_REFRESH_EXPIRES_IN`)
+- **Utilizare**: Pentru obținerea unui nou access token
+- **Securitate**: Stocat în mod sigur pe client (httpOnly cookie recomandat)
+
+### Flux de Autentificare
+1. **Login/Register**: Utilizatorul primește atât access token cât și refresh token
+2. **API Requests**: Access token-ul este folosit pentru autentificarea la endpoints
+3. **Token Expirat**: Când access token-ul expiră, clientul folosește refresh token-ul pentru a obține unul nou
+4. **Refresh Endpoint**: `POST /auth/refresh` - primește refresh token și returnează un nou access token
 
 ## 🧪 Testare
 
@@ -275,7 +296,9 @@ NODE_ENV=production
 PORT=3000
 MONGODB_URI=mongodb://your-production-db:27017/todo-list
 JWT_SECRET=your-super-secure-production-jwt-secret
-JWT_EXPIRES_IN=7d
+JWT_EXPIRES_IN=15m
+JWT_REFRESH_SECRET=your-super-secure-production-refresh-secret
+JWT_REFRESH_EXPIRES_IN=7d
 RATE_LIMIT_WINDOW_MS=900000
 RATE_LIMIT_MAX_REQUESTS=50
 ```

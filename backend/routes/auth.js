@@ -8,7 +8,8 @@ const {
   logout,
   getProfile,
   updateProfile,
-  changePassword
+  changePassword,
+  refreshToken
 } = require('../controllers/authController');
 
 const router = express.Router();
@@ -144,7 +145,8 @@ const changePasswordValidation = [
  *                   lastName: "Doe"
  *                   isActive: true
  *                   createdAt: "2023-01-01T00:00:00.000Z"
- *                 token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *                 accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+ *                 refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
  *       400:
  *         description: Date invalide
  *         content:
@@ -196,7 +198,8 @@ router.post('/register', registerValidation, validate, register);
  *                   lastName: "Doe"
  *                   isActive: true
  *                   lastLogin: "2023-01-01T00:00:00.000Z"
- *                 token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *                 accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+ *                 refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
  *       401:
  *         description: Credențiale invalide
  *         content:
@@ -205,6 +208,51 @@ router.post('/register', registerValidation, validate, register);
  *               $ref: '#/components/schemas/Error'
  */
 router.post('/login', loginValidation, validate, login);
+
+/**
+ * @swagger
+ * /auth/refresh:
+ *   post:
+ *     summary: Reîmprospătează token-ul de acces
+ *     tags: [Autentificare]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - refreshToken
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *                 description: Refresh token-ul pentru obținerea unui nou access token
+ *     responses:
+ *       200:
+ *         description: Token reîmprospătat cu succes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Success'
+ *             example:
+ *               success: true
+ *               message: "Token reîmprospătat cu succes"
+ *               data:
+ *                 accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *       400:
+ *         description: Refresh token lipsă
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Refresh token invalid sau expirat
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.post('/refresh', refreshToken);
 
 /**
  * @swagger
