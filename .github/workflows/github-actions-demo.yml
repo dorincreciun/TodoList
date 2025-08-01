@@ -21,9 +21,11 @@ jobs:
 
       - name: Instalare dependențe
         run: npm install
+        working-directory: ./frontend
 
       - name: Verificare ESLint
         run: npm run lint
 
       - name: Build aplicație
         run: npm run build
+        working-directory: ./frontend
