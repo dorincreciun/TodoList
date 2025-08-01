@@ -6,7 +6,7 @@ export const Header = () => {
     const isAuthorized = useAuthStore((state) => state.isAuthorized);
     const {logout} = useAuthStore()
     return (
-        <header className={'py-4 bg-gray-500'}>
+        <header className={'py-4 bg-stone-950'}>
             <div className={'flex items-center justify-between container mx-auto'}>
                 <Link to={Routing_Paths.HOME}>Home</Link>
                 <Link to={Routing_Paths.CABINET}>Cabinet</Link>

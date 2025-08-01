@@ -1,1 +1,2 @@
-export {AuthPage} from './ui'
+export {SignInPage} from './SignIn'
+export {SignUpPage} from './SignUp'

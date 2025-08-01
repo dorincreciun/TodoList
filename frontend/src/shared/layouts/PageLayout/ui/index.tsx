@@ -1,5 +1,10 @@
-import type {FC, PropsWithChildren} from "react";
+import type {FC, ReactNode} from "react";
 
-export const PageLayout: FC<PropsWithChildren> = ({children}) => {
-    return <main className={'container py-5 mx-auto flex-1'}>{children}</main>
+type PageLayout = {
+    children: ReactNode;
+    className?: string
+}
+
+export const PageLayout: FC<PageLayout> = ({children, className}) => {
+    return <main className={'container py-5 mx-auto flex-1 ' + className}>{children}</main>
 }
