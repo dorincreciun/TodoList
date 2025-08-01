@@ -36,7 +36,6 @@ export const AppLayout = () => {
         }
     }, []);
 
-
     return (
         <StrictMode>
             <BrowserRouter>
