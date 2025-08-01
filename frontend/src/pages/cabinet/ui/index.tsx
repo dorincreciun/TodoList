@@ -1,3 +1,9 @@
+import {PageLayout} from "../../../shared/layouts/PageLayout";
+
 export const CabinetPage = () => {
-    return <div>CabinetPage</div>
+    return (
+        <PageLayout>
+            CabinetPage
+        </PageLayout>
+    )
 }

@@ -1,3 +1,9 @@
+import {PageLayout} from "../../../shared/layouts/PageLayout";
+
 export const AuthPage = () => {
-    return <div>AuthPage</div>
+    return (
+        <PageLayout>
+            AuthPage
+        </PageLayout>
+    )
 }
