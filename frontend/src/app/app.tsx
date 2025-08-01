@@ -32,7 +32,6 @@ export const AppLayout = () => {
                     logout();
                 }
             };
-
             updateUser();
         }
     }, []);
