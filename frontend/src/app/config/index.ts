@@ -1,4 +1,9 @@
 export const Routing_Paths = {
-    HOME: "/"
+    /* Public */
+    HOME: "/",
+    LOGIN: "/login",
+
+    /* Private */
+    CABINET: "/cabinet"
 } as const
 
