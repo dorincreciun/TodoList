@@ -69,7 +69,36 @@ app.get('/api-docs.json', (req, res) => {
   res.send(swaggerSpecs);
 });
 
-// Ruta de health check
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     summary: Health check pentru server
+ *     description: Verifică dacă serverul funcționează corect
+ *     tags: [Sistem]
+ *     responses:
+ *       200:
+ *         description: Serverul funcționează corect
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/Success'
+ *                 - type: object
+ *                   properties:
+ *                     timestamp:
+ *                       type: string
+ *                       format: date-time
+ *                       description: Timestamp-ul curent
+ *                     environment:
+ *                       type: string
+ *                       description: Mediul de rulare
+ *             example:
+ *               success: true
+ *               message: "Serverul funcționează corect"
+ *               timestamp: "2023-01-01T00:00:00.000Z"
+ *               environment: "development"
+ */
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
@@ -79,7 +108,47 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Ruta pentru informații despre API
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: Informații despre API
+ *     description: Returnează informații generale despre API și endpoint-urile disponibile
+ *     tags: [Sistem]
+ *     responses:
+ *       200:
+ *         description: Informații despre API
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/Success'
+ *                 - type: object
+ *                   properties:
+ *                     documentation:
+ *                       type: string
+ *                       description: URL-ul către documentația Swagger
+ *                     endpoints:
+ *                       type: object
+ *                       properties:
+ *                         auth:
+ *                           type: string
+ *                           description: Endpoint-ul pentru autentificare
+ *                         todos:
+ *                           type: string
+ *                           description: Endpoint-ul pentru todo-uri
+ *                         health:
+ *                           type: string
+ *                           description: Endpoint-ul pentru health check
+ *             example:
+ *               success: true
+ *               message: "Todo List API v1.0.0"
+ *               documentation: "/api-docs"
+ *               endpoints:
+ *                 auth: "/api/auth"
+ *                 todos: "/api/todos"
+ *                 health: "/api/health"
+ */
 app.get('/api', (req, res) => {
   res.json({
     success: true,

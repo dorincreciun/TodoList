@@ -139,6 +139,7 @@ router.use(auth);
  * /todos:
  *   post:
  *     summary: Creează un todo nou
+ *     description: Creează un nou todo pentru utilizatorul autentificat cu validare completă
  *     tags: [Todo-uri]
  *     security:
  *       - bearerAuth: []
@@ -147,45 +148,29 @@ router.use(auth);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - title
- *             properties:
- *               title:
- *                 type: string
- *                 minLength: 1
- *                 maxLength: 200
- *                 description: Titlul todo-ului
- *               description:
- *                 type: string
- *                 maxLength: 1000
- *                 description: Descrierea todo-ului
- *               priority:
- *                 type: string
- *                 enum: [low, medium, high, urgent]
- *                 default: medium
- *                 description: Prioritatea todo-ului
- *               dueDate:
- *                 type: string
- *                 format: date-time
- *                 description: Data de scadență
- *               tags:
- *                 type: array
- *                 items:
- *                   type: string
- *                   maxLength: 20
- *                 description: Tag-urile asociate todo-ului
- *               isPublic:
- *                 type: boolean
- *                 default: false
- *                 description: Dacă todo-ul este public
+ *             $ref: '#/components/schemas/TodoCreateRequest'
+ *           example:
+ *             title: "Cumpără pâine"
+ *             description: "Nu uita să cumpăr pâine de la magazin"
+ *             priority: "medium"
+ *             dueDate: "2023-12-31T23:59:59.000Z"
+ *             tags: ["cumpărături", "alimente"]
+ *             isPublic: false
  *     responses:
  *       201:
  *         description: Todo creat cu succes
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Success'
+ *               allOf:
+ *                 - $ref: '#/components/schemas/Success'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         todo:
+ *                           $ref: '#/components/schemas/Todo'
  *             example:
  *               success: true
  *               message: "Todo creat cu succes"
@@ -201,6 +186,7 @@ router.use(auth);
  *                   isPublic: false
  *                   user: "507f1f77bcf86cd799439012"
  *                   createdAt: "2023-01-01T00:00:00.000Z"
+ *                   updatedAt: "2023-01-01T00:00:00.000Z"
  *       400:
  *         description: Date invalide
  *         content:
@@ -213,6 +199,12 @@ router.use(auth);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *       422:
+ *         description: Erori de validare
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post('/', createTodoValidation, validate, createTodo);
 
@@ -221,6 +213,7 @@ router.post('/', createTodoValidation, validate, createTodo);
  * /todos:
  *   get:
  *     summary: Obține toate todo-urile utilizatorului cu filtrare
+ *     description: Returnează lista de todo-uri cu filtrare avansată, paginare și sortare
  *     tags: [Todo-uri]
  *     security:
  *       - bearerAuth: []
@@ -279,11 +272,23 @@ router.post('/', createTodoValidation, validate, createTodo);
  *         description: Ordinea de sortare
  *     responses:
  *       200:
- *         description: Lista de todo-uri
+ *         description: Lista de todo-uri cu paginare
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Success'
+ *               allOf:
+ *                 - $ref: '#/components/schemas/Success'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         todos:
+ *                           type: array
+ *                           items:
+ *                             $ref: '#/components/schemas/Todo'
+ *                         pagination:
+ *                           $ref: '#/components/schemas/Pagination'
  *             example:
  *               success: true
  *               data:
@@ -297,11 +302,15 @@ router.post('/', createTodoValidation, validate, createTodo);
  *                     isOverdue: false
  *                     timeUntilDue: "2 zile"
  *                     progress: 0
+ *                     tags: ["cumpărături", "alimente"]
+ *                     isPublic: false
  *                     user:
  *                       _id: "507f1f77bcf86cd799439012"
  *                       firstName: "John"
  *                       lastName: "Doe"
  *                       username: "john_doe"
+ *                     createdAt: "2023-01-01T00:00:00.000Z"
+ *                     updatedAt: "2023-01-01T00:00:00.000Z"
  *                 pagination:
  *                   currentPage: 1
  *                   totalPages: 1
@@ -309,6 +318,12 @@ router.post('/', createTodoValidation, validate, createTodo);
  *                   itemsPerPage: 10
  *       401:
  *         description: Token invalid
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       422:
+ *         description: Erori de validare pentru parametrii de query
  *         content:
  *           application/json:
  *             schema:
@@ -321,6 +336,7 @@ router.get('/', queryValidation, validate, getTodos);
  * /todos/stats:
  *   get:
  *     summary: Obține statistici pentru todo-uri
+ *     description: Returnează statistici detaliate despre todo-urile utilizatorului
  *     tags: [Todo-uri]
  *     security:
  *       - bearerAuth: []
@@ -330,7 +346,15 @@ router.get('/', queryValidation, validate, getTodos);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Success'
+ *               allOf:
+ *                 - $ref: '#/components/schemas/Success'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         stats:
+ *                           $ref: '#/components/schemas/TodoStats'
  *             example:
  *               success: true
  *               data:

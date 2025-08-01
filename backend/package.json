@@ -35,7 +35,8 @@
     "dev": "nodemon server.js",
     "test": "jest",
     "test:api": "node test/test.js",
-    "generate-types": "openapi-typescript http://localhost:3000/api-docs.json -o types/schema.ts",
-    "generate-types-from-file": "openapi-typescript ./swagger-spec.json -o types/schema.ts"
+    "generate-types": "node scripts/generate-types.js",
+    "generate-types-from-file": "openapi-typescript ./swagger-spec.json -o types/schema.ts",
+    "swagger:export": "curl http://localhost:3000/api-docs.json > swagger-spec.json"
   }
 } 

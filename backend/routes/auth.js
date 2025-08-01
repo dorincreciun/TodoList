@@ -87,52 +87,41 @@ const changePasswordValidation = [
  * /auth/register:
  *   post:
  *     summary: Înregistrare utilizator nou
+ *     description: Creează un cont nou pentru utilizator cu validare completă a datelor
  *     tags: [Autentificare]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - username
- *               - email
- *               - password
- *               - firstName
- *               - lastName
- *             properties:
- *               username:
- *                 type: string
- *                 minLength: 3
- *                 maxLength: 30
- *                 pattern: '^[a-zA-Z0-9_]+$'
- *                 description: Username-ul utilizatorului
- *               email:
- *                 type: string
- *                 format: email
- *                 description: Email-ul utilizatorului
- *               password:
- *                 type: string
- *                 minLength: 6
- *                 pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)'
- *                 description: Parola (min 6 caractere, cel puțin o literă mică, mare și o cifră)
- *               firstName:
- *                 type: string
- *                 minLength: 2
- *                 maxLength: 50
- *                 description: Prenumele utilizatorului
- *               lastName:
- *                 type: string
- *                 minLength: 2
- *                 maxLength: 50
- *                 description: Numele utilizatorului
+ *             $ref: '#/components/schemas/RegisterRequest'
+ *           example:
+ *             username: "john_doe"
+ *             email: "john@example.com"
+ *             password: "Password123"
+ *             firstName: "John"
+ *             lastName: "Doe"
  *     responses:
  *       201:
  *         description: Utilizator înregistrat cu succes
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Success'
+ *               allOf:
+ *                 - $ref: '#/components/schemas/Success'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         user:
+ *                           $ref: '#/components/schemas/User'
+ *                         accessToken:
+ *                           type: string
+ *                           description: JWT access token
+ *                         refreshToken:
+ *                           type: string
+ *                           description: JWT refresh token
  *             example:
  *               success: true
  *               message: "Utilizator înregistrat cu succes"
@@ -145,14 +134,30 @@ const changePasswordValidation = [
  *                   lastName: "Doe"
  *                   isActive: true
  *                   createdAt: "2023-01-01T00:00:00.000Z"
- *                 accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+ *                 accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
  *                 refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
  *       400:
- *         description: Date invalide
+ *         description: Date invalide sau utilizator existent
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               success: false
+ *               message: "Utilizator cu acest email sau username există deja"
+ *       422:
+ *         description: Erori de validare
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               success: false
+ *               message: "Eroare de validare"
+ *               errors:
+ *                 - field: "email"
+ *                   message: "Vă rugăm introduceți un email valid"
+ *                   value: "invalid-email"
  */
 router.post('/register', registerValidation, validate, register);
 
@@ -161,31 +166,38 @@ router.post('/register', registerValidation, validate, register);
  * /auth/login:
  *   post:
  *     summary: Autentificare utilizator
+ *     description: Autentifică un utilizator existent și returnează token-uri JWT
  *     tags: [Autentificare]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - email
- *               - password
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *                 description: Email-ul utilizatorului
- *               password:
- *                 type: string
- *                 description: Parola utilizatorului
+ *             $ref: '#/components/schemas/LoginRequest'
+ *           example:
+ *             email: "john@example.com"
+ *             password: "Password123"
  *     responses:
  *       200:
  *         description: Autentificare reușită
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Success'
+ *               allOf:
+ *                 - $ref: '#/components/schemas/Success'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         user:
+ *                           $ref: '#/components/schemas/User'
+ *                         accessToken:
+ *                           type: string
+ *                           description: JWT access token
+ *                         refreshToken:
+ *                           type: string
+ *                           description: JWT refresh token
  *             example:
  *               success: true
  *               message: "Autentificare reușită"
@@ -198,10 +210,19 @@ router.post('/register', registerValidation, validate, register);
  *                   lastName: "Doe"
  *                   isActive: true
  *                   lastLogin: "2023-01-01T00:00:00.000Z"
- *                 accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+ *                 accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
  *                 refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
  *       401:
- *         description: Credențiale invalide
+ *         description: Credențiale invalide sau cont dezactivat
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               success: false
+ *               message: "Email sau parolă incorectă"
+ *       422:
+ *         description: Erori de validare
  *         content:
  *           application/json:
  *             schema:
@@ -214,26 +235,32 @@ router.post('/login', loginValidation, validate, login);
  * /auth/refresh:
  *   post:
  *     summary: Reîmprospătează token-ul de acces
+ *     description: Obține un nou access token folosind un refresh token valid
  *     tags: [Autentificare]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - refreshToken
- *             properties:
- *               refreshToken:
- *                 type: string
- *                 description: Refresh token-ul pentru obținerea unui nou access token
+ *             $ref: '#/components/schemas/RefreshTokenRequest'
+ *           example:
+ *             refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
  *     responses:
  *       200:
  *         description: Token reîmprospătat cu succes
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Success'
+ *               allOf:
+ *                 - $ref: '#/components/schemas/Success'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         accessToken:
+ *                           type: string
+ *                           description: JWT access token nou
  *             example:
  *               success: true
  *               message: "Token reîmprospătat cu succes"
@@ -245,12 +272,18 @@ router.post('/login', loginValidation, validate, login);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               success: false
+ *               message: "Refresh token este obligatoriu"
  *       401:
  *         description: Refresh token invalid sau expirat
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               success: false
+ *               message: "Refresh token invalid"
  */
 router.post('/refresh', refreshToken);
 
@@ -259,6 +292,7 @@ router.post('/refresh', refreshToken);
  * /auth/logout:
  *   post:
  *     summary: Deconectare utilizator
+ *     description: Deconectează utilizatorul curent (invalidează token-ul pe client)
  *     tags: [Autentificare]
  *     security:
  *       - bearerAuth: []
@@ -269,12 +303,18 @@ router.post('/refresh', refreshToken);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Success'
+ *             example:
+ *               success: true
+ *               message: "Logout realizat cu succes"
  *       401:
  *         description: Token invalid
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               success: false
+ *               message: "Token invalid"
  */
 router.post('/logout', auth, logout);
 
@@ -283,6 +323,7 @@ router.post('/logout', auth, logout);
  * /auth/profile:
  *   get:
  *     summary: Obține profilul utilizatorului curent
+ *     description: Returnează informațiile complete ale profilului utilizatorului autentificat
  *     tags: [Profil]
  *     security:
  *       - bearerAuth: []
@@ -292,7 +333,15 @@ router.post('/logout', auth, logout);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Success'
+ *               allOf:
+ *                 - $ref: '#/components/schemas/Success'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         user:
+ *                           $ref: '#/components/schemas/User'
  *             example:
  *               success: true
  *               data:
@@ -305,12 +354,16 @@ router.post('/logout', auth, logout);
  *                   isActive: true
  *                   lastLogin: "2023-01-01T00:00:00.000Z"
  *                   createdAt: "2023-01-01T00:00:00.000Z"
+ *                   updatedAt: "2023-01-01T00:00:00.000Z"
  *       401:
  *         description: Token invalid
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               success: false
+ *               message: "Token invalid"
  */
 router.get('/profile', auth, getProfile);
 
@@ -319,6 +372,7 @@ router.get('/profile', auth, getProfile);
  * /auth/profile:
  *   put:
  *     summary: Actualizează profilul utilizatorului
+ *     description: Actualizează informațiile de profil ale utilizatorului autentificat
  *     tags: [Profil]
  *     security:
  *       - bearerAuth: []
@@ -327,37 +381,57 @@ router.get('/profile', auth, getProfile);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               firstName:
- *                 type: string
- *                 minLength: 2
- *                 maxLength: 50
- *                 description: Prenumele utilizatorului
- *               lastName:
- *                 type: string
- *                 minLength: 2
- *                 maxLength: 50
- *                 description: Numele utilizatorului
- *               email:
- *                 type: string
- *                 format: email
- *                 description: Email-ul utilizatorului
+ *             $ref: '#/components/schemas/ProfileUpdateRequest'
+ *           example:
+ *             firstName: "John"
+ *             lastName: "Smith"
+ *             email: "john.smith@example.com"
  *     responses:
  *       200:
  *         description: Profil actualizat cu succes
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Success'
+ *               allOf:
+ *                 - $ref: '#/components/schemas/Success'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         user:
+ *                           $ref: '#/components/schemas/User'
+ *             example:
+ *               success: true
+ *               message: "Profil actualizat cu succes"
+ *               data:
+ *                 user:
+ *                   _id: "507f1f77bcf86cd799439011"
+ *                   username: "john_doe"
+ *                   email: "john.smith@example.com"
+ *                   firstName: "John"
+ *                   lastName: "Smith"
+ *                   isActive: true
+ *                   lastLogin: "2023-01-01T00:00:00.000Z"
+ *                   createdAt: "2023-01-01T00:00:00.000Z"
+ *                   updatedAt: "2023-01-01T00:00:00.000Z"
  *       400:
- *         description: Date invalide
+ *         description: Date invalide sau email deja folosit
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               success: false
+ *               message: "Email-ul este deja folosit de alt utilizator"
  *       401:
  *         description: Token invalid
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       422:
+ *         description: Erori de validare
  *         content:
  *           application/json:
  *             schema:
@@ -370,6 +444,7 @@ router.put('/profile', auth, updateProfileValidation, validate, updateProfile);
  * /auth/change-password:
  *   put:
  *     summary: Schimbă parola utilizatorului
+ *     description: Schimbă parola utilizatorului autentificat cu validare a parolei curente
  *     tags: [Profil]
  *     security:
  *       - bearerAuth: []
@@ -378,19 +453,10 @@ router.put('/profile', auth, updateProfileValidation, validate, updateProfile);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - currentPassword
- *               - newPassword
- *             properties:
- *               currentPassword:
- *                 type: string
- *                 description: Parola curentă
- *               newPassword:
- *                 type: string
- *                 minLength: 6
- *                 pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)'
- *                 description: Parola nouă (min 6 caractere, cel puțin o literă mică, mare și o cifră)
+ *             $ref: '#/components/schemas/ChangePasswordRequest'
+ *           example:
+ *             currentPassword: "OldPassword123"
+ *             newPassword: "NewPassword123"
  *     responses:
  *       200:
  *         description: Parolă schimbată cu succes
@@ -398,14 +464,26 @@ router.put('/profile', auth, updateProfileValidation, validate, updateProfile);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Success'
+ *             example:
+ *               success: true
+ *               message: "Parola schimbată cu succes"
  *       400:
  *         description: Parolă curentă incorectă sau parolă nouă invalidă
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               success: false
+ *               message: "Parola curentă este incorectă"
  *       401:
  *         description: Token invalid
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       422:
+ *         description: Erori de validare
  *         content:
  *           application/json:
  *             schema:
