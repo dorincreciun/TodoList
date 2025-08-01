@@ -47,4 +47,4 @@ jobs:
         run: git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
       - name: Deploy către GitHub Pages
-        run: npx gh-pages -d dist --clean
+        run: npx gh-pages -d dist
