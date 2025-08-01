@@ -1,13 +1,5 @@
-import {StrictMode} from 'react'
 import {createRoot} from 'react-dom/client'
+import {AppLayout} from "./app.tsx";
 import './styles/index.css'
-import {BrowserRouter} from "react-router";
-import {Router} from "./routing";
 
-createRoot(document.getElementById('root')!).render(
-    <StrictMode>
-        <BrowserRouter>
-            <Router />
-        </BrowserRouter>
-    </StrictMode>,
-)
+createRoot(document.getElementById('root')!).render(<AppLayout />)
