@@ -7,7 +7,7 @@ type AuthStore = {
     refreshToken: string | null;
 
     login: (accessToken: string, refreshToken: string) => void,
-    update: (accessToken: string, refreshToken: string) => void,
+    update: (refreshToken: string) => void,
     logout: () => void
 }
 
@@ -29,10 +29,9 @@ export const useAuthStore = create<AuthStore>((set) => {
             set({ accessToken: null, refreshToken: null, isAuthorized: false })
         },
 
-        update: (accessToken, refreshToken) => {
+        update: (accessToken) => {
             localStorage.setItem("accessToken", accessToken)
-            localStorage.setItem("refreshToken", refreshToken)
-            set({ accessToken, refreshToken })
+            set({ accessToken })
         }
     }
 })

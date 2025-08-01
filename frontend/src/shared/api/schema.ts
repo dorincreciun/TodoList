@@ -13,7 +13,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Înregistrare utilizator nou */
+        /**
+         * Înregistrare utilizator nou
+         * @description Creează un cont nou pentru utilizator cu validare completă a datelor
+         */
         post: {
             parameters: {
                 query?: never;
@@ -23,21 +26,14 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    "application/json": {
-                        /** @description Username-ul utilizatorului */
-                        username: string;
-                        /**
-                         * Format: email
-                         * @description Email-ul utilizatorului
-                         */
-                        email: string;
-                        /** @description Parola (min 6 caractere, cel puțin o literă mică, mare și o cifră) */
-                        password: string;
-                        /** @description Prenumele utilizatorului */
-                        firstName: string;
-                        /** @description Numele utilizatorului */
-                        lastName: string;
-                    };
+                    /** @example {
+                     *       "username": "john_doe",
+                     *       "email": "john@example.com",
+                     *       "password": "Password123",
+                     *       "firstName": "John",
+                     *       "lastName": "Doe"
+                     *     } */
+                    "application/json": components["schemas"]["RegisterRequest"];
                 };
             };
             responses: {
@@ -60,18 +56,51 @@ export interface paths {
                          *           "isActive": true,
                          *           "createdAt": "2023-01-01T00:00:00.000Z"
                          *         },
-                         *         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                         *         "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                         *         "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                          *       }
                          *     } */
-                        "application/json": components["schemas"]["Success"];
+                        "application/json": components["schemas"]["Success"] & {
+                            data?: {
+                                user?: components["schemas"]["User"];
+                                /** @description JWT access token */
+                                accessToken?: string;
+                                /** @description JWT refresh token */
+                                refreshToken?: string;
+                            };
+                        };
                     };
                 };
-                /** @description Date invalide */
+                /** @description Date invalide sau utilizator existent */
                 400: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
+                        /** @example {
+                         *       "success": false,
+                         *       "message": "Utilizator cu acest email sau username există deja"
+                         *     } */
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Erori de validare */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        /** @example {
+                         *       "success": false,
+                         *       "message": "Eroare de validare",
+                         *       "errors": [
+                         *         {
+                         *           "field": "email",
+                         *           "message": "Vă rugăm introduceți un email valid",
+                         *           "value": "invalid-email"
+                         *         }
+                         *       ]
+                         *     } */
                         "application/json": components["schemas"]["Error"];
                     };
                 };
@@ -92,7 +121,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Autentificare utilizator */
+        /**
+         * Autentificare utilizator
+         * @description Autentifică un utilizator existent și returnează token-uri JWT
+         */
         post: {
             parameters: {
                 query?: never;
@@ -102,15 +134,11 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    "application/json": {
-                        /**
-                         * Format: email
-                         * @description Email-ul utilizatorului
-                         */
-                        email: string;
-                        /** @description Parola utilizatorului */
-                        password: string;
-                    };
+                    /** @example {
+                     *       "email": "john@example.com",
+                     *       "password": "Password123"
+                     *     } */
+                    "application/json": components["schemas"]["LoginRequest"];
                 };
             };
             responses: {
@@ -133,18 +161,124 @@ export interface paths {
                          *           "isActive": true,
                          *           "lastLogin": "2023-01-01T00:00:00.000Z"
                          *         },
-                         *         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                         *         "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                         *         "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                          *       }
                          *     } */
-                        "application/json": components["schemas"]["Success"];
+                        "application/json": components["schemas"]["Success"] & {
+                            data?: {
+                                user?: components["schemas"]["User"];
+                                /** @description JWT access token */
+                                accessToken?: string;
+                                /** @description JWT refresh token */
+                                refreshToken?: string;
+                            };
+                        };
                     };
                 };
-                /** @description Credențiale invalide */
+                /** @description Credențiale invalide sau cont dezactivat */
                 401: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
+                        /** @example {
+                         *       "success": false,
+                         *       "message": "Email sau parolă incorectă"
+                         *     } */
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Erori de validare */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reîmprospătează token-ul de acces
+         * @description Obține un nou access token folosind un refresh token valid
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    /** @example {
+                     *       "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                     *     } */
+                    "application/json": components["schemas"]["RefreshTokenRequest"];
+                };
+            };
+            responses: {
+                /** @description Token reîmprospătat cu succes */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        /** @example {
+                         *       "success": true,
+                         *       "message": "Token reîmprospătat cu succes",
+                         *       "data": {
+                         *         "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                         *       }
+                         *     } */
+                        "application/json": components["schemas"]["Success"] & {
+                            data?: {
+                                /** @description JWT access token nou */
+                                accessToken?: string;
+                            };
+                        };
+                    };
+                };
+                /** @description Refresh token lipsă */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        /** @example {
+                         *       "success": false,
+                         *       "message": "Refresh token este obligatoriu"
+                         *     } */
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Refresh token invalid sau expirat */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        /** @example {
+                         *       "success": false,
+                         *       "message": "Refresh token invalid"
+                         *     } */
                         "application/json": components["schemas"]["Error"];
                     };
                 };
@@ -165,7 +299,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Deconectare utilizator */
+        /**
+         * Deconectare utilizator
+         * @description Deconectează utilizatorul curent (invalidează token-ul pe client)
+         */
         post: {
             parameters: {
                 query?: never;
@@ -181,6 +318,10 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /** @example {
+                         *       "success": true,
+                         *       "message": "Logout realizat cu succes"
+                         *     } */
                         "application/json": components["schemas"]["Success"];
                     };
                 };
@@ -190,6 +331,10 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /** @example {
+                         *       "success": false,
+                         *       "message": "Token invalid"
+                         *     } */
                         "application/json": components["schemas"]["Error"];
                     };
                 };
@@ -208,7 +353,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Obține profilul utilizatorului curent */
+        /**
+         * Obține profilul utilizatorului curent
+         * @description Returnează informațiile complete ale profilului utilizatorului autentificat
+         */
         get: {
             parameters: {
                 query?: never;
@@ -235,11 +383,16 @@ export interface paths {
                          *           "lastName": "Doe",
                          *           "isActive": true,
                          *           "lastLogin": "2023-01-01T00:00:00.000Z",
-                         *           "createdAt": "2023-01-01T00:00:00.000Z"
+                         *           "createdAt": "2023-01-01T00:00:00.000Z",
+                         *           "updatedAt": "2023-01-01T00:00:00.000Z"
                          *         }
                          *       }
                          *     } */
-                        "application/json": components["schemas"]["Success"];
+                        "application/json": components["schemas"]["Success"] & {
+                            data?: {
+                                user?: components["schemas"]["User"];
+                            };
+                        };
                     };
                 };
                 /** @description Token invalid */
@@ -248,12 +401,19 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /** @example {
+                         *       "success": false,
+                         *       "message": "Token invalid"
+                         *     } */
                         "application/json": components["schemas"]["Error"];
                     };
                 };
             };
         };
-        /** Actualizează profilul utilizatorului */
+        /**
+         * Actualizează profilul utilizatorului
+         * @description Actualizează informațiile de profil ale utilizatorului autentificat
+         */
         put: {
             parameters: {
                 query?: never;
@@ -263,17 +423,12 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    "application/json": {
-                        /** @description Prenumele utilizatorului */
-                        firstName?: string;
-                        /** @description Numele utilizatorului */
-                        lastName?: string;
-                        /**
-                         * Format: email
-                         * @description Email-ul utilizatorului
-                         */
-                        email?: string;
-                    };
+                    /** @example {
+                     *       "firstName": "John",
+                     *       "lastName": "Smith",
+                     *       "email": "john.smith@example.com"
+                     *     } */
+                    "application/json": components["schemas"]["ProfileUpdateRequest"];
                 };
             };
             responses: {
@@ -283,11 +438,45 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Success"];
+                        /** @example {
+                         *       "success": true,
+                         *       "message": "Profil actualizat cu succes",
+                         *       "data": {
+                         *         "user": {
+                         *           "_id": "507f1f77bcf86cd799439011",
+                         *           "username": "john_doe",
+                         *           "email": "john.smith@example.com",
+                         *           "firstName": "John",
+                         *           "lastName": "Smith",
+                         *           "isActive": true,
+                         *           "lastLogin": "2023-01-01T00:00:00.000Z",
+                         *           "createdAt": "2023-01-01T00:00:00.000Z",
+                         *           "updatedAt": "2023-01-01T00:00:00.000Z"
+                         *         }
+                         *       }
+                         *     } */
+                        "application/json": components["schemas"]["Success"] & {
+                            data?: {
+                                user?: components["schemas"]["User"];
+                            };
+                        };
                     };
                 };
-                /** @description Date invalide */
+                /** @description Date invalide sau email deja folosit */
                 400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        /** @example {
+                         *       "success": false,
+                         *       "message": "Email-ul este deja folosit de alt utilizator"
+                         *     } */
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Token invalid */
+                401: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -295,8 +484,8 @@ export interface paths {
                         "application/json": components["schemas"]["Error"];
                     };
                 };
-                /** @description Token invalid */
-                401: {
+                /** @description Erori de validare */
+                422: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -321,7 +510,10 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        /** Schimbă parola utilizatorului */
+        /**
+         * Schimbă parola utilizatorului
+         * @description Schimbă parola utilizatorului autentificat cu validare a parolei curente
+         */
         put: {
             parameters: {
                 query?: never;
@@ -331,12 +523,11 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    "application/json": {
-                        /** @description Parola curentă */
-                        currentPassword: string;
-                        /** @description Parola nouă (min 6 caractere, cel puțin o literă mică, mare și o cifră) */
-                        newPassword: string;
-                    };
+                    /** @example {
+                     *       "currentPassword": "OldPassword123",
+                     *       "newPassword": "NewPassword123"
+                     *     } */
+                    "application/json": components["schemas"]["ChangePasswordRequest"];
                 };
             };
             responses: {
@@ -346,6 +537,10 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /** @example {
+                         *       "success": true,
+                         *       "message": "Parola schimbată cu succes"
+                         *     } */
                         "application/json": components["schemas"]["Success"];
                     };
                 };
@@ -355,11 +550,24 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
+                        /** @example {
+                         *       "success": false,
+                         *       "message": "Parola curentă este incorectă"
+                         *     } */
                         "application/json": components["schemas"]["Error"];
                     };
                 };
                 /** @description Token invalid */
                 401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Erori de validare */
+                422: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -383,7 +591,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Obține toate todo-urile utilizatorului cu filtrare */
+        /**
+         * Obține toate todo-urile utilizatorului cu filtrare
+         * @description Returnează lista de todo-uri cu filtrare avansată, paginare și sortare
+         */
         get: {
             parameters: {
                 query?: {
@@ -410,7 +621,7 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description Lista de todo-uri */
+                /** @description Lista de todo-uri cu paginare */
                 200: {
                     headers: {
                         [name: string]: unknown;
@@ -430,12 +641,19 @@ export interface paths {
                          *             "isOverdue": false,
                          *             "timeUntilDue": "2 zile",
                          *             "progress": 0,
+                         *             "tags": [
+                         *               "cumpărături",
+                         *               "alimente"
+                         *             ],
+                         *             "isPublic": false,
                          *             "user": {
                          *               "_id": "507f1f77bcf86cd799439012",
                          *               "firstName": "John",
                          *               "lastName": "Doe",
                          *               "username": "john_doe"
-                         *             }
+                         *             },
+                         *             "createdAt": "2023-01-01T00:00:00.000Z",
+                         *             "updatedAt": "2023-01-01T00:00:00.000Z"
                          *           }
                          *         ],
                          *         "pagination": {
@@ -446,7 +664,12 @@ export interface paths {
                          *         }
                          *       }
                          *     } */
-                        "application/json": components["schemas"]["Success"];
+                        "application/json": components["schemas"]["Success"] & {
+                            data?: {
+                                todos?: components["schemas"]["Todo"][];
+                                pagination?: components["schemas"]["Pagination"];
+                            };
+                        };
                     };
                 };
                 /** @description Token invalid */
@@ -458,10 +681,22 @@ export interface paths {
                         "application/json": components["schemas"]["Error"];
                     };
                 };
+                /** @description Erori de validare pentru parametrii de query */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
             };
         };
         put?: never;
-        /** Creează un todo nou */
+        /**
+         * Creează un todo nou
+         * @description Creează un nou todo pentru utilizatorul autentificat cu validare completă
+         */
         post: {
             parameters: {
                 query?: never;
@@ -471,30 +706,18 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    "application/json": {
-                        /** @description Titlul todo-ului */
-                        title: string;
-                        /** @description Descrierea todo-ului */
-                        description?: string;
-                        /**
-                         * @description Prioritatea todo-ului
-                         * @default medium
-                         * @enum {string}
-                         */
-                        priority?: "low" | "medium" | "high" | "urgent";
-                        /**
-                         * Format: date-time
-                         * @description Data de scadență
-                         */
-                        dueDate?: string;
-                        /** @description Tag-urile asociate todo-ului */
-                        tags?: string[];
-                        /**
-                         * @description Dacă todo-ul este public
-                         * @default false
-                         */
-                        isPublic?: boolean;
-                    };
+                    /** @example {
+                     *       "title": "Cumpără pâine",
+                     *       "description": "Nu uita să cumpăr pâine de la magazin",
+                     *       "priority": "medium",
+                     *       "dueDate": "2023-12-31T23:59:59.000Z",
+                     *       "tags": [
+                     *         "cumpărături",
+                     *         "alimente"
+                     *       ],
+                     *       "isPublic": false
+                     *     } */
+                    "application/json": components["schemas"]["TodoCreateRequest"];
                 };
             };
             responses: {
@@ -521,11 +744,16 @@ export interface paths {
                          *           ],
                          *           "isPublic": false,
                          *           "user": "507f1f77bcf86cd799439012",
-                         *           "createdAt": "2023-01-01T00:00:00.000Z"
+                         *           "createdAt": "2023-01-01T00:00:00.000Z",
+                         *           "updatedAt": "2023-01-01T00:00:00.000Z"
                          *         }
                          *       }
                          *     } */
-                        "application/json": components["schemas"]["Success"];
+                        "application/json": components["schemas"]["Success"] & {
+                            data?: {
+                                todo?: components["schemas"]["Todo"];
+                            };
+                        };
                     };
                 };
                 /** @description Date invalide */
@@ -539,6 +767,15 @@ export interface paths {
                 };
                 /** @description Token invalid */
                 401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Erori de validare */
+                422: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -561,7 +798,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Obține statistici pentru todo-uri */
+        /**
+         * Obține statistici pentru todo-uri
+         * @description Returnează statistici detaliate despre todo-urile utilizatorului
+         */
         get: {
             parameters: {
                 query?: never;
@@ -597,7 +837,11 @@ export interface paths {
                          *         }
                          *       }
                          *     } */
-                        "application/json": components["schemas"]["Success"];
+                        "application/json": components["schemas"]["Success"] & {
+                            data?: {
+                                stats?: components["schemas"]["TodoStats"];
+                            };
+                        };
                     };
                 };
                 /** @description Token invalid */
@@ -966,29 +1210,148 @@ export interface paths {
         };
         trace?: never;
     };
+    "/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Health check pentru server
+         * @description Verifică dacă serverul funcționează corect
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Serverul funcționează corect */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        /** @example {
+                         *       "success": true,
+                         *       "message": "Serverul funcționează corect",
+                         *       "timestamp": "2023-01-01T00:00:00.000Z",
+                         *       "environment": "development"
+                         *     } */
+                        "application/json": components["schemas"]["Success"] & {
+                            /**
+                             * Format: date-time
+                             * @description Timestamp-ul curent
+                             */
+                            timestamp?: string;
+                            /** @description Mediul de rulare */
+                            environment?: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Informații despre API
+         * @description Returnează informații generale despre API și endpoint-urile disponibile
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Informații despre API */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        /** @example {
+                         *       "success": true,
+                         *       "message": "Todo List API v1.0.0",
+                         *       "documentation": "/api-docs",
+                         *       "endpoints": {
+                         *         "auth": "/api/auth",
+                         *         "todos": "/api/todos",
+                         *         "health": "/api/health"
+                         *       }
+                         *     } */
+                        "application/json": components["schemas"]["Success"] & {
+                            /** @description URL-ul către documentația Swagger */
+                            documentation?: string;
+                            endpoints?: {
+                                /** @description Endpoint-ul pentru autentificare */
+                                auth?: string;
+                                /** @description Endpoint-ul pentru todo-uri */
+                                todos?: string;
+                                /** @description Endpoint-ul pentru health check */
+                                health?: string;
+                            };
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         User: {
-            /** @description ID-ul unic al utilizatorului */
+            /**
+             * Format: ObjectId
+             * @description ID-ul unic al utilizatorului
+             */
             _id?: string;
-            /** @description Username-ul utilizatorului */
-            username?: string;
+            /** @description Username-ul utilizatorului (doar litere, cifre și underscore) */
+            username: string;
             /**
              * Format: email
              * @description Email-ul utilizatorului
              */
-            email?: string;
+            email: string;
             /** @description Prenumele utilizatorului */
-            firstName?: string;
+            firstName: string;
             /** @description Numele utilizatorului */
-            lastName?: string;
-            /** @description Statusul contului */
-            isActive?: boolean;
+            lastName: string;
+            /**
+             * @description Statusul contului (activ/inactiv)
+             * @default true
+             */
+            isActive: boolean;
             /**
              * Format: date-time
-             * @description Ultima conectare
+             * @description Ultima conectare a utilizatorului
              */
             lastLogin?: string;
             /**
@@ -1003,8 +1366,176 @@ export interface components {
             updatedAt?: string;
         };
         Todo: {
-            /** @description ID-ul unic al todo-ului */
+            /**
+             * Format: ObjectId
+             * @description ID-ul unic al todo-ului
+             */
             _id?: string;
+            /** @description Titlul todo-ului */
+            title: string;
+            /** @description Descrierea detaliată a todo-ului */
+            description?: string;
+            /**
+             * @description Statusul curent al todo-ului
+             * @default pending
+             * @enum {string}
+             */
+            status: "pending" | "in_progress" | "completed" | "cancelled";
+            /**
+             * @description Prioritatea todo-ului
+             * @default medium
+             * @enum {string}
+             */
+            priority: "low" | "medium" | "high" | "urgent";
+            /**
+             * Format: date-time
+             * @description Data de scadență a todo-ului
+             */
+            dueDate?: string;
+            /**
+             * Format: date-time
+             * @description Data când todo-ul a fost completat
+             */
+            completedAt?: string;
+            /** @description Tag-urile asociate todo-ului pentru organizare */
+            tags?: string[];
+            /** @description Utilizatorul care a creat todo-ul */
+            user: components["schemas"]["User"];
+            /**
+             * @description Dacă todo-ul este vizibil public
+             * @default false
+             */
+            isPublic: boolean;
+            /** @description Dacă todo-ul este întârziat (calculat automat) */
+            isOverdue?: boolean;
+            /** @description Timpul rămas până la scadență (calculat automat) */
+            timeUntilDue?: string;
+            /** @description Progresul todo-ului în procente (0-100) */
+            progress?: number;
+            /** @description Fișiere atașate la todo */
+            attachments?: {
+                filename?: string;
+                originalName?: string;
+                mimeType?: string;
+                size?: number;
+                url?: string;
+            }[];
+            /**
+             * Format: date-time
+             * @description Data creării todo-ului
+             */
+            createdAt?: string;
+            /**
+             * Format: date-time
+             * @description Data ultimei actualizări
+             */
+            updatedAt?: string;
+        };
+        TodoStats: {
+            /** @description Numărul total de todo-uri */
+            total?: number;
+            /** @description Numărul de todo-uri completate */
+            completed?: number;
+            /** @description Numărul de todo-uri în așteptare */
+            pending?: number;
+            /** @description Numărul de todo-uri în progres */
+            inProgress?: number;
+            /** @description Numărul de todo-uri anulate */
+            cancelled?: number;
+            /** @description Numărul de todo-uri întârziate */
+            overdue?: number;
+            /** @description Rata de completare în procente */
+            completionRate?: number;
+            /** @description Distribuția todo-urilor pe priorități */
+            priorityBreakdown?: {
+                low?: number;
+                medium?: number;
+                high?: number;
+                urgent?: number;
+            };
+        };
+        Pagination: {
+            /** @description Pagina curentă */
+            currentPage?: number;
+            /** @description Numărul total de pagini */
+            totalPages?: number;
+            /** @description Numărul total de elemente */
+            totalItems?: number;
+            /** @description Numărul de elemente per pagină */
+            itemsPerPage?: number;
+        };
+        Error: {
+            /** @example false */
+            success: boolean;
+            /** @description Mesajul de eroare principal */
+            message: string;
+            /** @description Lista de erori de validare */
+            errors?: {
+                /** @description Câmpul care a cauzat eroarea */
+                field?: string;
+                /** @description Mesajul de eroare pentru câmp */
+                message?: string;
+                /** @description Valoarea care a cauzat eroarea */
+                value?: string;
+            }[];
+        };
+        Success: {
+            /** @example true */
+            success: boolean;
+            /** @description Mesajul de succes */
+            message?: string;
+            /** @description Datele returnate de API */
+            data?: Record<string, never>;
+        };
+        LoginRequest: {
+            /**
+             * Format: email
+             * @description Email-ul utilizatorului
+             */
+            email: string;
+            /** @description Parola utilizatorului */
+            password: string;
+        };
+        RegisterRequest: {
+            /** @description Username-ul utilizatorului */
+            username: string;
+            /**
+             * Format: email
+             * @description Email-ul utilizatorului
+             */
+            email: string;
+            /** @description Parola (min 6 caractere, cel puțin o literă mică, mare și o cifră) */
+            password: string;
+            /** @description Prenumele utilizatorului */
+            firstName: string;
+            /** @description Numele utilizatorului */
+            lastName: string;
+        };
+        TodoCreateRequest: {
+            /** @description Titlul todo-ului */
+            title: string;
+            /** @description Descrierea todo-ului */
+            description?: string;
+            /**
+             * @description Prioritatea todo-ului
+             * @default medium
+             * @enum {string}
+             */
+            priority: "low" | "medium" | "high" | "urgent";
+            /**
+             * Format: date-time
+             * @description Data de scadență
+             */
+            dueDate?: string;
+            /** @description Tag-urile asociate todo-ului */
+            tags?: string[];
+            /**
+             * @description Dacă todo-ul este public
+             * @default false
+             */
+            isPublic: boolean;
+        };
+        TodoUpdateRequest: {
             /** @description Titlul todo-ului */
             title?: string;
             /** @description Descrierea todo-ului */
@@ -1024,55 +1555,31 @@ export interface components {
              * @description Data de scadență
              */
             dueDate?: string;
-            /**
-             * Format: date-time
-             * @description Data completării
-             */
-            completedAt?: string;
             /** @description Tag-urile asociate todo-ului */
             tags?: string[];
-            /** @description Utilizatorul care a creat todo-ul */
-            user?: components["schemas"]["User"];
             /** @description Dacă todo-ul este public */
             isPublic?: boolean;
-            /** @description Dacă todo-ul este întârziat */
-            isOverdue?: boolean;
-            /** @description Timpul rămas până la scadență */
-            timeUntilDue?: string;
-            /** @description Progresul todo-ului (0-100) */
-            progress?: number;
-            /**
-             * Format: date-time
-             * @description Data creării
-             */
-            createdAt?: string;
-            /**
-             * Format: date-time
-             * @description Data ultimei actualizări
-             */
-            updatedAt?: string;
         };
-        Error: {
-            /** @example false */
-            success?: boolean;
-            /** @description Mesajul de eroare */
-            message?: string;
-            errors?: {
-                /** @description Câmpul cu eroare */
-                field?: string;
-                /** @description Mesajul de eroare pentru câmp */
-                message?: string;
-                /** @description Valoarea care a cauzat eroarea */
-                value?: string;
-            }[];
+        ProfileUpdateRequest: {
+            /** @description Prenumele utilizatorului */
+            firstName?: string;
+            /** @description Numele utilizatorului */
+            lastName?: string;
+            /**
+             * Format: email
+             * @description Email-ul utilizatorului
+             */
+            email?: string;
         };
-        Success: {
-            /** @example true */
-            success?: boolean;
-            /** @description Mesajul de succes */
-            message?: string;
-            /** @description Datele returnate */
-            data?: Record<string, never>;
+        ChangePasswordRequest: {
+            /** @description Parola curentă */
+            currentPassword: string;
+            /** @description Parola nouă (min 6 caractere, cel puțin o literă mică, mare și o cifră) */
+            newPassword: string;
+        };
+        RefreshTokenRequest: {
+            /** @description Refresh token-ul pentru obținerea unui nou access token */
+            refreshToken: string;
         };
     };
     responses: never;
@@ -1083,7 +1590,16 @@ export interface components {
 }
 export type SchemaUser = components['schemas']['User'];
 export type SchemaTodo = components['schemas']['Todo'];
+export type SchemaTodoStats = components['schemas']['TodoStats'];
+export type SchemaPagination = components['schemas']['Pagination'];
 export type SchemaError = components['schemas']['Error'];
 export type SchemaSuccess = components['schemas']['Success'];
+export type SchemaLoginRequest = components['schemas']['LoginRequest'];
+export type SchemaRegisterRequest = components['schemas']['RegisterRequest'];
+export type SchemaTodoCreateRequest = components['schemas']['TodoCreateRequest'];
+export type SchemaTodoUpdateRequest = components['schemas']['TodoUpdateRequest'];
+export type SchemaProfileUpdateRequest = components['schemas']['ProfileUpdateRequest'];
+export type SchemaChangePasswordRequest = components['schemas']['ChangePasswordRequest'];
+export type SchemaRefreshTokenRequest = components['schemas']['RefreshTokenRequest'];
 export type $defs = Record<string, never>;
 export type operations = Record<string, never>;
