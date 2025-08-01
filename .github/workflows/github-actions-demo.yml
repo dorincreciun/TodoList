@@ -5,10 +5,12 @@ on:
     branches: [ master ]
     paths:
       - 'frontend/**'
+      - '.github/**'
   pull_request:
     branches: [ master ]
     paths:
       - 'frontend/**'
+      - '.github/**'
 
 jobs:
   build:
