@@ -1,0 +1,50 @@
+name: TodoList Frontend
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'frontend/**'
+      - '.github/**'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'frontend/**'
+      - '.github/**'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    steps:
+      - name: Checkout cod
+        uses: actions/checkout@v4
+
+      - name: Instalare Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalare dependențe
+        run: npm ci
+
+      - name: Verificare ESLint
+        run: npm run lint
+
+      - name: Build aplicație
+        run: npm run build
+
+      - name: Setare identitate Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Autentificare cu GitHub Token
+        run: git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+
+      - name: Deploy către GitHub Pages
+        run: npx gh-pages -d dist
