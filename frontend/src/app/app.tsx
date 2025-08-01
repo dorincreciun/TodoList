@@ -2,7 +2,7 @@ import {StrictMode, useEffect} from "react";
 import {BrowserRouter} from "react-router";
 import {Router} from "./routing";
 import {client} from "../shared/api/client.ts";
-import {useAuthStore} from "../features/auth/model/useAuthStore.ts";
+import {useAuthStore} from "../features/auth";
 
 export const AppLayout = () => {
     const {logout, update} = useAuthStore()
