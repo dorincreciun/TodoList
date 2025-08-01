@@ -6,8 +6,9 @@ import {useAuthStore} from "../../../features/auth";
 
 export const AuthPage = () => {
     const {login} = useAuthStore()
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("john@example.com");
+    const [password, setPassword] = useState("Password123");
+
     return (
         <PageLayout>
             <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg border border-gray-200">

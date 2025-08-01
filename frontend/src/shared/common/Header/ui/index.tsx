@@ -9,7 +9,7 @@ export const Header = () => {
         <header className={'py-4 bg-gray-500'}>
             <div className={'flex items-center justify-between container mx-auto'}>
                 <Link to={Routing_Paths.HOME}>Home</Link>
-
+                <Link to={Routing_Paths.CABINET}>Cabinet</Link>
                 <div>
                     <Link to={Routing_Paths.LOGIN}>User</Link>
                     <button onClick={() => {
