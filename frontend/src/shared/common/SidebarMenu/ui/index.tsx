@@ -11,6 +11,7 @@ export const SidebarMenu = () => {
         <aside className={'h-screen bg-[#1E1F25]'}>
             <Logo />
 
+
             <IconDashboard />
             <IconBook />
             <IconSettings />
