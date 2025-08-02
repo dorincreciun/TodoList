@@ -1,1 +1,8 @@
 @import "tailwindcss";
+
+
+#root {
+    @apply
+    h-screen
+    bg-[#131517]
+}
