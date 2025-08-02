@@ -1,10 +1,13 @@
 export const Routing_Paths = {
     /* Public */
-    HOME: "/",
     LOGIN: "/login",
     REGISTER: "/register",
 
     /* Private */
-    CABINET: "/cabinet"
+    DASHBOARD: "/",
+    TASKS: "/tasks",
+    FILES: "/files",
+    SETTINGS: "/settings",
+    MESSAGE: "/message",
 } as const
 
