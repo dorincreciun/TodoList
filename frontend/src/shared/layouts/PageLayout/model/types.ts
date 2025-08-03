@@ -1,3 +1,6 @@
-import type {PropsWithChildren} from "react";
+import type {ReactNode} from "react";
 
-export type PageLayoutProps = PropsWithChildren
+export type PageLayoutProps = {
+    children: ReactNode;
+    className?: string;
+}
