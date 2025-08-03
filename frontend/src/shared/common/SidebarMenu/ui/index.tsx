@@ -1,34 +1,30 @@
 import {Logo} from "../../../icons/Logo.tsx";
-/* Icons */
-import {IconDashboard} from "../../../icons/IconDashboard.tsx";
-import {IconBook} from "../../../icons/IconBook.tsx";
-import {IconSettings} from "../../../icons/IconSettings.tsx";
-import {IconPlane} from "../../../icons/IconPlane.tsx";
-import {IconAddFolder} from "../../../icons/IconAddFolder.tsx";
 /* Components */
 import {Navigate} from "../../../components/Navigate";
 import {Routing_Paths} from "../../../../app/config";
+/* Icons */
+import {FolderPlus, Gauge, ListTodo, MessagesSquare, Settings} from "lucide-react";
 
 const MenuItems = [
     {
         href: Routing_Paths.DASHBOARD,
-        icon: <IconDashboard/>
+        icon: <Gauge />
     },
     {
         href: Routing_Paths.TASKS,
-        icon: <IconBook/>
+        icon: <ListTodo />
     },
     {
         href: Routing_Paths.SETTINGS,
-        icon: <IconSettings/>
+        icon: <Settings />
     },
     {
         href: Routing_Paths.MESSAGE,
-        icon: <IconPlane/>
+        icon: <MessagesSquare />
     },
     {
         href: Routing_Paths.FILES,
-        icon: <IconAddFolder/>
+        icon: <FolderPlus />
     }
 ]
 
