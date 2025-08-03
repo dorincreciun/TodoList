@@ -34,10 +34,10 @@ const MenuItems = [
 
 export const SidebarMenu = () => {
     return (
-        <aside className={'h-screen bg-[#1E1F25]'}>
+        <aside className={'h-screen bg-[#1E1F25] flex flex-col'}>
             <Logo/>
 
-            <nav className={'flex flex-col items-center justify-center gap-6.5 mt-10'}>
+            <nav className={'flex flex-col items-center flex-1 justify-center gap-6.5'}>
                 {
                     MenuItems.map(({href, icon}) => (
                         <Navigate key={href} href={href}>
