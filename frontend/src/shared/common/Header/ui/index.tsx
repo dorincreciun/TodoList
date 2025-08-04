@@ -1,6 +1,7 @@
 import {Input} from "../../../components/Input";
 /* Icons */
-import {Search, User} from "lucide-react";
+import {Bell, Search, User} from "lucide-react";
+import {Button} from "../../../components/Button";
 
 export const Header = () => {
     return (
@@ -8,20 +9,28 @@ export const Header = () => {
 
             <div className={'flex items-center mx-auto relative max-w-[450px] w-full'}>
                 <Input
-                    iconEnd={<Search/>}
                     type={'text'}
+                    iconEnd={<Search/>}
                     placeholder={'Search anything...'}
                 />
+
             </div>
 
-            <div>
-                <button className={'flex items-center gap-3 text-white cursor-pointer'}>
-                    <div
-                        className={'size-10 rounded-full overflow-hidden flex items-center justify-center bg-[#292A30]'}>
-                        <User />
-                    </div>
-                    {/*<ChevronDown/>*/}
-                </button>
+            <div className={'flex items-center space-x-3'}>
+                <Button
+                    rounded={'xl'}
+                    className={'p-1'}
+                    variant={'ghost'}
+                >
+                    <Bell />
+                </Button>
+                <Button
+                    rounded={'xl'}
+                    className={'p-1'}
+                    variant={'ghost'}
+                >
+                    <User/>
+                </Button>
             </div>
         </header>
     )

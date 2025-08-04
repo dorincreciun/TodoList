@@ -5,9 +5,11 @@ type CustomInputProps = {
     ref?: RefObject<HTMLInputElement>
     iconStart?: ReactNode;
     iconEnd?: ReactNode;
+    invalid?: boolean;
+    invalidMessage?: string[];
 }
 
 export type InputProps
     = InputHTMLAttributes<HTMLInputElement>
-    & Pick<InputVariants, "variant" | "size" | "rounded">
+    & Pick<InputVariants, "size" | "rounded">
     & CustomInputProps

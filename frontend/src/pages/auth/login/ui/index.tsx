@@ -24,6 +24,7 @@ export const LoginPage = () => {
                         </label>
 
                         <Input
+                            invalid
                             iconStart={<AtSign size={18}/>}
                             id="email"
                             type="email"

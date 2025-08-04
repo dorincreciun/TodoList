@@ -6,7 +6,8 @@ export const DashboardPage = () => {
         <PageLayout>
             DashboardPage
 
-            <Button size={'md'}>Button</Button>
+
+            <Button size={'md'} variant={'secondary'}>Secondary</Button>
 
         </PageLayout>
     )
