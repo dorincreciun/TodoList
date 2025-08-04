@@ -2,8 +2,10 @@ import {Input} from "../../../components/Input";
 /* Icons */
 import {Bell, Search, User} from "lucide-react";
 import {Button} from "../../../components/Button";
+import {useNotification} from "../../../../features/messages/model/useNotification.ts";
 
 export const Header = () => {
+    const toggle = useNotification((state) => state.toggle);
     return (
         <header className={'max-w-full w-full bg-[#1E1F25] flex items-center h-[76px] px-10'}>
             <div className={'flex items-center mx-auto relative max-w-[450px] w-full'}>
@@ -19,6 +21,7 @@ export const Header = () => {
 
                 {/* Notification */}
                 <Button
+                    onClick={toggle}
                     rounded={'xl'}
                     className={'p-1'}
                     variant={'ghost'}
