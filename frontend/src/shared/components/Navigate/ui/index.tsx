@@ -6,7 +6,7 @@ import {style} from "./style.ts";
 export const Navigate = ({children, href, className, ...rest}: NavigateProps) => {
 
     const navigateStyles = (isActive: boolean): string => cn(
-        style({}),
+        style(),
         isActive && "bg-[#5051F9] text-white",
         className
     )

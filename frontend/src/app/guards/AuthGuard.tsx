@@ -1,5 +1,5 @@
 import {Navigate, Outlet} from "react-router";
-import {Routing_Paths} from "../config";
+import {Routing_Paths} from "../../shared/config/routing.ts";
 
 export const AuthGuard = () => {
     const isAuthorized = true

@@ -1,10 +1,10 @@
-import type {ButtonProps} from "../../Navigate/model/types.ts";
 import {cn} from "../../../lib/cn.ts";
-import {style} from "../../Navigate/ui/style.ts";
+import type {ButtonProps} from "../model/types.ts";
+import {style} from "./style.ts";
 
-export const Button = ({children, className, variant, ...rest}: ButtonProps) => {
+export const Button = ({children, className, variant = 'primary', size, ...rest}: ButtonProps) => {
 
-    const buttonStyles = cn(style({ variant}), className)
+    const buttonStyles = cn(style({ variant, size }), className)
 
     return (
         <button

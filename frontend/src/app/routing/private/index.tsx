@@ -1,6 +1,6 @@
 import {AuthGuard} from "../../guards/AuthGuard.tsx";
 import type {RouteObject} from "react-router";
-import {Routing_Paths} from "../../config";
+import {Routing_Paths} from "../../../shared/config/routing.ts";
 /* Pages */
 import {DashboardPage} from "../../../pages/dashboard";
 import {TasksPage} from "../../../pages/tasks";

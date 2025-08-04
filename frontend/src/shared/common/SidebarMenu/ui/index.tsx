@@ -1,7 +1,7 @@
 import {Logo} from "../../../icons/Logo.tsx";
 /* Components */
 import {Navigate} from "../../../components/Navigate";
-import {Routing_Paths} from "../../../../app/config";
+import {Routing_Paths} from "../../../config/routing.ts";
 /* Icons */
 import {FolderPlus, Gauge, ListTodo, MessagesSquare, Settings} from "lucide-react";
 

@@ -10,4 +10,3 @@ export const Routing_Paths = {
     SETTINGS: "/settings",
     MESSAGE: "/message",
 } as const
-
