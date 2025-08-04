@@ -8,4 +8,5 @@ export type ButtonProps
 
 type CustomButtonProps = {
     isLoading?: boolean;
+    badge?: true | number;
 }

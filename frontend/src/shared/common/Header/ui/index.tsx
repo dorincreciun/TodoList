@@ -22,6 +22,7 @@ export const Header = () => {
                     rounded={'xl'}
                     className={'p-1'}
                     variant={'ghost'}
+                    badge={10}
                 >
                     <Bell />
                 </Button>
