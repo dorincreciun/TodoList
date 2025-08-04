@@ -5,8 +5,6 @@ export type InputVariants = VariantProps<typeof style>;
 
 export const style = cva(
     [
-        // Base styles
-        // "py-[12px] px-5 rounded-lg ",
         "placeholder:leading-0",
         "transition-colors duration-300 ease-in w-full",
 
