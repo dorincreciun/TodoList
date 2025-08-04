@@ -7,7 +7,7 @@ import {useNotification} from "../../../../features/messages/model/useNotificati
 export const Header = () => {
     const toggle = useNotification((state) => state.toggle);
     return (
-        <header className={'max-w-full w-full bg-[#1E1F25] flex items-center h-[76px] px-10'}>
+        <header className={'max-w-full w-full bg-[#1E1F25] flex items-center h-[76px] px-10 border-b border-[#131517]'}>
             <div className={'flex items-center mx-auto relative max-w-[450px] w-full'}>
 
                 {/* Search input */}
