@@ -11,8 +11,8 @@ export const Input = ({className, variant, size, rounded, iconStart, iconEnd, ..
     )
 
     return (
-        <div>
-            <div className="relative">
+        <div className={'w-full'}>
+            <div className={'relative w-full'}>
                 {iconStart && (
                     <div
                         className={'absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#8899A8]/50'}>
@@ -25,7 +25,7 @@ export const Input = ({className, variant, size, rounded, iconStart, iconEnd, ..
                 />
                 {iconEnd && (
                     <div
-                        className={'absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#8899A8]/50'}>
+                        className={'absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-[#8899A8]/50'}>
                         {iconEnd}
                     </div>
                 )}
