@@ -6,6 +6,7 @@ import {Header} from "../shared/common/Header";
 import {SidebarMenu} from "../shared/common/SidebarMenu";
 /* Features */
 import {SidebarMessages} from "../features/messages";
+import {SidebarAuth} from "../features/auth";
 
 export const AppLayout = () => {
 
@@ -18,7 +19,10 @@ export const AppLayout = () => {
                         <Header />
                         <div className={'flex-1 flex'}>
                             <Router/>
+
+                            {/* Sidebars */}
                             <SidebarMessages />
+                            <SidebarAuth />
                         </div>
                     </div>
                 </div>

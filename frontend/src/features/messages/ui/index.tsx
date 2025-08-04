@@ -6,14 +6,15 @@ export const SidebarMessages = () => {
     return (
         <aside
             className={cn(
-                "fixed right-0 top-[76px] bg-[#1E1F25] h-full w-[500px] transition-transform duration-500 ease-in-out shadow-xl p-8",
+                "fixed right-0 top-[76px] bg-[#1E1F25] h-full w-[500px] flex items-center justify-center transition-transform duration-500 ease-in-out shadow-xl p-8",
                 {
                     "translate-x-0": isOpened,
                     "translate-x-full": !isOpened,
                 }
             )}
         >
-            <h4 className={'text-white font-bold text-3xl'}>Messages</h4>
+
+
         </aside>
     )
 }
