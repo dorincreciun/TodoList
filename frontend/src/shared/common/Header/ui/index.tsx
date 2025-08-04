@@ -13,7 +13,6 @@ export const Header = () => {
                     iconEnd={<Search/>}
                     placeholder={'Search anything...'}
                 />
-
             </div>
 
             <div className={'flex items-center space-x-3'}>
