@@ -77,8 +77,8 @@ export const RegisterForm = ({changeForm}: { changeForm: () => void }) => {
             <div className="text-center text-sm text-[#94A3B8]">
                 <p>Already have an account?
                     <button
-                       onClick={changeForm}
-                       className="font-semibold text-[#60A5FA] hover:text-[#38BDF8] transition-colors ms-2 hover:underline">
+                        onClick={changeForm}
+                        className="font-semibold text-[#60A5FA] hover:text-[#38BDF8] transition-colors ms-2 hover:underline">
                         Sign in
                     </button>
                 </p>
