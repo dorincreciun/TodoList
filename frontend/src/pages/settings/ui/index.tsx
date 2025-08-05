@@ -104,12 +104,10 @@ export const SettingsPage = () => {
                         </div>
 
                         <Input
-                            iconStart={<AtSign size={18}
-                                               className="text-[#8899A8] group-focus-within:text-[#5051F9] transition-colors"/>}
+                            iconStart={<AtSign size={18}/>}
                             id="email"
                             type="email"
                             placeholder="you@example.com"
-                            className={'pl-12 pr-4 py-3 bg-[#282932]/50 border-[#282932] focus:border-[#5051F9] focus:bg-[#282932] transition-all duration-300'}
                         />
                     </div>
 
