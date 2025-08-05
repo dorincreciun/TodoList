@@ -1,30 +1,16 @@
 import {cn} from "../../../lib/cn.ts";
-import {type ReactNode, useRef} from "react";
+import type {SidebarProps} from "../model/types.ts";
+import {useRef} from "react";
+import {useClickOutside} from "../../../hooks/useClickOutside.ts";
 
-type SidebarProps = {
-    isOpen: boolean;
-    toggle: () => void;
-    render: (props: { isOpen: boolean; toggle: () => void }) => ReactNode;
-};
+export const SidebarLayout = ({isOpen, render, onClickOutside}: SidebarProps & { onClickOutside?: () => void }) => {
+    const ref = useRef<HTMLDivElement>(null);
 
-export const SidebarLayout = ({isOpen, toggle, render}: SidebarProps) => {
-    const ref = useRef<HTMLDivElement | null>(null)
-
-    // useEffect(() => {
-    //     if (!isOpen) return;
-    //
-    //     const handleClickOutside = (e: MouseEvent) => {
-    //         if (ref.current && !ref.current.contains(e.target as Node)) {
-    //             toggle();
-    //         }
-    //     };
-    //
-    //     document.addEventListener("click", handleClickOutside);
-    //
-    //     return () => {
-    //         document.removeEventListener("click", handleClickOutside);
-    //     };
-    // }, [isOpen, toggle]);
+    useClickOutside(ref, () => {
+        if (onClickOutside && isOpen) {
+            onClickOutside();
+        }
+    });
 
     return (
         <aside
@@ -37,8 +23,11 @@ export const SidebarLayout = ({isOpen, toggle, render}: SidebarProps) => {
                 }
             )}
         >
-            {render({isOpen, toggle})}
+            {render({isOpen})}
         </aside>
-    )
-}
+    );
+};
+
+SidebarLayout.displayName = "SidebarLayout";
+
 

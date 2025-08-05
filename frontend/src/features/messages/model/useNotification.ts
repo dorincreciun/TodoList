@@ -15,7 +15,7 @@ export const useNotification = create<NotificationState>((set) => {
         message: [],
 
         toggle: () => set((state) => ({ ...state, isOpened: !state.isOpened })),
-        open: () => {},
-        close: () => {},
+        open: () => set({ isOpened: true }),
+        close: () => set({ isOpened: false }),
     }
 })

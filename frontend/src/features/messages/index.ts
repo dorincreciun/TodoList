@@ -1,1 +1,1 @@
-export {SidebarMessages} from './ui'
+export {SidebarMessages as default} from './ui'

@@ -1,2 +1,2 @@
-export {SidebarAuth} from './ui'
+export {SidebarAuth as default} from './ui'
 export {useAuthSidebar} from './model/useAuthSidebar'

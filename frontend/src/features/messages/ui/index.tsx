@@ -1,20 +1,15 @@
 import {useNotification} from "../model/useNotification.ts";
-import {cn} from "../../../shared/lib/cn.ts";
+import {SidebarLayout} from "../../../shared/layouts/SidebarLayout";
 
 export const SidebarMessages = () => {
     const isOpened = useNotification(state => state.isOpened)
+    const close = useNotification(state => state.close)
+
     return (
-        <aside
-            className={cn(
-                "fixed right-0 top-[76px] bg-[#1E1F25] h-full w-[500px] flex items-center justify-center transition-transform duration-500 ease-in-out shadow-xl p-8",
-                {
-                    "translate-x-0": isOpened,
-                    "translate-x-full": !isOpened,
-                }
-            )}
-        >
-
-
-        </aside>
+        <SidebarLayout
+            isOpen={isOpened}
+            onClickOutside={close}
+            render={() => <div></div>}
+        />
     )
 }
