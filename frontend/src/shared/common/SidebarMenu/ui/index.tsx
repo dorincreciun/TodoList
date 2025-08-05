@@ -30,7 +30,7 @@ const MenuItems = [
 
 export const SidebarMenu = () => {
     return (
-        <aside className={'h-screen fixed top-0'}>
+        <aside className={'h-screen max-md:hidden md:fixed top-0'}>
             <div className={'bg-[#1E1F25] h-full flex flex-col'}>
                 <Logo/>
 

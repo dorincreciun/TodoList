@@ -12,7 +12,7 @@ export const Header = () => {
     return (
         <header className={'sticky top-0'}>
             <div
-                className={'max-w-full w-full bg-[#1E1F25] flex items-center h-[76px] max-md:px-3  md:px-6 lg:px-10 border-b border-[#131517]'}>
+                className={'max-w-full w-full bg-[#1E1F25] flex items-center h-[76px] max-md:px-3  md:px-6 lg:px-10 border-b gap-7 border-[#131517]'}>
                 <div className={'flex items-center mx-auto relative max-w-[450px] w-full'}>
 
                     {/* Search input */}
@@ -22,7 +22,7 @@ export const Header = () => {
                         placeholder={'Search anything...'}
                     />
                 </div>
-                <div className={'flex items-center space-x-3'}>
+                <div className={'flex items-center max-md:space-x-2 md:space-x-3'}>
 
                     {/* Notification */}
                     <Button
