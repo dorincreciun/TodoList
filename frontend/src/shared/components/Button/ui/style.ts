@@ -16,7 +16,7 @@ export const style = cva([
     'focus:ring-2 focus:ring-offset-2',
 
     /* transition */
-    'transition-filter duration-200 ease-in',
+    'transition-colors duration-200 ease-in',
 ], {
     variants: {
         variant: {

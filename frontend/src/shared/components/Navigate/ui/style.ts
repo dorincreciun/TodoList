@@ -15,7 +15,7 @@ export const style = cva([
         'cursor-pointer outline-none',
 
         /* Transitions */
-        'transition-filter duration-200 ease-in',
+        'transition-colors duration-200 ease-in',
 
         /* States: Hover */
         'hover:bg-[#5051F9]/90 hover:text-white',

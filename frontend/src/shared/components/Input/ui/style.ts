@@ -29,7 +29,7 @@ export const style = cva(
         "invalid:border-red-500",
 
         /* transition */
-        'transition-filter duration-200 ease-in',
+        'transition-colors duration-200 ease-in',
     ],
     {
         variants: {

@@ -16,7 +16,7 @@ const tabSections = [
 
 export const SettingsPage = () => {
     return (
-        <PageLayout className={'flex-1'}>
+        <PageLayout className={'flex-1 p-6'}>
 
             {/* Image background */}
             <div className={'w-full h-auto overflow-hidden'}>
@@ -27,7 +27,7 @@ export const SettingsPage = () => {
                 />
             </div>
 
-            <div className={'relative -top-12 px-12.5'}>
+            <div className={''}>
 
                 {/* Header section */}
                 <div className={'flex items-end justify-between'}>
@@ -44,7 +44,7 @@ export const SettingsPage = () => {
 
                 {/* Settings tab */}
                 <div className={'mt-7.5 mb-12.5'}>
-                    <ul className={'flex gap-7.5'}>
+                    <ul className={'flex flex-wrap gap-7.5'}>
                         {
                             tabSections.map(({name}) => (
                                 <li
