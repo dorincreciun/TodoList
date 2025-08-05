@@ -12,7 +12,7 @@ export const AppLayout = () => {
     return (
         <StrictMode>
             <BrowserRouter>
-                <div className={'flex'}>
+                <div className={'flex size-full'}>
                     <SidebarMenu/>
                     <div className={'flex-1 flex flex-col md:ms-[96px]'}>
                         <Header/>
