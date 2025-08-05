@@ -19,9 +19,12 @@ export const AppLayout = () => {
                         <div className={'flex-1 flex'}>
                             <Router/>
 
-                            {/* Sidebars */}
-                            <Suspense fallback={<div>Loading...</div>}>
+                            {/* Sidebars - Optimized positioning with separate Suspense boundaries */}
+                            <Suspense fallback={<div>Loading messages...</div>}>
                                 <SidebarMessages/>
+                            </Suspense>
+                            
+                            <Suspense fallback={<div>Loading auth...</div>}>
                                 <SidebarAuth/>
                             </Suspense>
                         </div>

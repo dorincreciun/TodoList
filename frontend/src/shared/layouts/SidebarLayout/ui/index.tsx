@@ -17,7 +17,6 @@ export const SidebarLayout = ({isOpen, render, onClickOutside}: SidebarProps & {
             ref={ref}
             className={cn(
                 "fixed right-0 top-[76px] h-[calc(100dvh-76px)] bg-[#1E1F25] shadow-xl transition-transform duration-500 ease-in-out",
-                "overflow-y-auto flex items-center justify-center p-8",
                 "w-full sm:max-w-[500px]",
                 {
                     "translate-x-0": isOpen,
@@ -25,7 +24,11 @@ export const SidebarLayout = ({isOpen, render, onClickOutside}: SidebarProps & {
                 }
             )}
         >
-            {render({ isOpen })}
+            <div className="h-full overflow-y-auto p-8">
+                <div className="min-h-full flex items-center justify-center">
+                    {render({ isOpen })}
+                </div>
+            </div>
         </aside>
     );
 };
