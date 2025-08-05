@@ -16,12 +16,16 @@
     }
 }
 
+html, body, #root {
+    min-height: 100vh;
+    height: 100%;
+}
+
 body {
     font-family: 'DM Sans', sans-serif;
 }
 
 #root {
     @apply
-    min-h-screen
     bg-[#131517]
 }
