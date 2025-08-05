@@ -7,7 +7,7 @@ export const LoginForm = ({changeForm}: { changeForm: () => void }) => {
     const PasswordInput = withPasswordInput(Input);
     return (
         <div
-            className={'max-w-[480px] w-full mx-auto px-6 relative z-10 animate-fade-in-scale'}>
+            className={'max-w-[480px] w-full mx-auto sm:px-6 relative z-10 animate-fade-in-scale'}>
             {/* Card container with glass effect */}
 
             {/* Header section */}

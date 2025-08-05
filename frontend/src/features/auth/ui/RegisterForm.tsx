@@ -6,7 +6,7 @@ import {withPasswordInput} from "../../../shared/HOC/PasswordInput";
 export const RegisterForm = ({changeForm}: { changeForm: () => void }) => {
     const PasswordInput = withPasswordInput(Input);
     return (
-        <div className={'max-w-[480px] w-full mx-auto px-6 relative z-10 animate-fade-in-scale'}>
+        <div className={'max-w-[480px] w-full mx-auto sm:px-6 relative z-10 animate-fade-in-scale'}>
             {/* Header section */}
             <div className="text-center mb-8">
                 <div
