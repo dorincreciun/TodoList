@@ -22,6 +22,6 @@ body {
 
 #root {
     @apply
-    h-screen
+    min-h-screen
     bg-[#131517]
 }

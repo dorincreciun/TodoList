@@ -14,7 +14,7 @@ export const AppLayout = () => {
             <BrowserRouter>
                 <div className={'flex'}>
                     <SidebarMenu/>
-                    <div className={'flex-1 flex flex-col'}>
+                    <div className={'flex-1 flex flex-col ms-[96px]'}>
                         <Header/>
                         <div className={'flex-1 flex'}>
                             <Router/>

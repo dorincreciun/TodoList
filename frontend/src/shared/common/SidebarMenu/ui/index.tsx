@@ -30,18 +30,20 @@ const MenuItems = [
 
 export const SidebarMenu = () => {
     return (
-        <aside className={'h-screen bg-[#1E1F25] flex flex-col'}>
-            <Logo/>
+        <aside className={'h-screen fixed top-0'}>
+            <div className={'bg-[#1E1F25] h-full flex flex-col'}>
+                <Logo/>
 
-            <nav className={'flex flex-col items-center flex-1 justify-center gap-6.5'}>
-                {
-                    MenuItems.map(({href, icon}) => (
-                        <Navigate key={href} href={href}>
-                            {icon}
-                        </Navigate>
-                    ))
-                }
-            </nav>
+                <nav className={'flex flex-col items-center flex-1 justify-center gap-6.5'}>
+                    {
+                        MenuItems.map(({href, icon}) => (
+                            <Navigate key={href} href={href}>
+                                {icon}
+                            </Navigate>
+                        ))
+                    }
+                </nav>
+            </div>
         </aside>
     )
 }
