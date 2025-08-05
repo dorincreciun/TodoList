@@ -3,10 +3,10 @@ import {Input} from "../../../shared/components/Input";
 import {Button} from "../../../shared/components/Button";
 import {withPasswordInput} from "../../../shared/HOC/PasswordInput";
 
-export const RegisterForm = () => {
+export const RegisterForm = ({changeForm}: { changeForm: () => void }) => {
     const PasswordInput = withPasswordInput(Input);
     return (
-        <div className={'max-w-[480px] w-full mx-auto px-6 relative z-10'}>
+        <div className={'max-w-[480px] w-full mx-auto px-6 relative z-10 animate-fade-in-scale'}>
             {/* Header section */}
             <div className="text-center mb-8">
                 <div
@@ -76,10 +76,11 @@ export const RegisterForm = () => {
             {/* Footer */}
             <div className="text-center text-sm text-[#94A3B8]">
                 <p>Already have an account?
-                    <a href="#"
+                    <button
+                       onClick={changeForm}
                        className="font-semibold text-[#60A5FA] hover:text-[#38BDF8] transition-colors ms-2 hover:underline">
                         Sign in
-                    </a>
+                    </button>
                 </p>
             </div>
         </div>
