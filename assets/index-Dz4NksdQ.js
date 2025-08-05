@@ -1,0 +1,1 @@
+import{u as e,j as i,S as n}from"./index-BSnokvk0.js";const r=()=>{const o=e(s=>s.isOpened),t=e(s=>s.close);return i.jsx(n,{isOpen:o,onClickOutside:t,render:()=>i.jsx("div",{})})};export{r as default};
