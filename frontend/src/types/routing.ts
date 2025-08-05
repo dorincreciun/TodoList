@@ -1,5 +1,5 @@
 import type {RouteObject} from "react-router";
-import {Routing_Paths} from "../app/config";
+import type {Routing_Paths} from "../shared/config/routing.ts";
 
 export type RoutingPaths = (typeof Routing_Paths)[keyof typeof Routing_Paths]
 
