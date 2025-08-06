@@ -1,11 +1,5 @@
 import {create} from 'zustand'
-
-type AuthSidebarState = {
-    isOpened: boolean
-    toggle: () => void
-    close: () => void
-    open: () => void
-}
+import type {AuthSidebarState} from "../type/AuthSidebar.ts";
 
 export const useAuthSidebar = create<AuthSidebarState>((set) => {
     return {

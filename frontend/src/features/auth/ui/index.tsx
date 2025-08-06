@@ -1,6 +1,6 @@
 import {SidebarLayout} from "../../../shared/layouts/SidebarLayout";
 import {LoginForm} from "./LoginForm.tsx";
-import {useAuthSidebar} from "../model/useAuthSidebar.ts";
+import {useAuthSidebar} from "../model/hook/useAuthSidebar.ts";
 import {useState} from "react";
 import {RegisterForm} from "./RegisterForm.tsx";
 
