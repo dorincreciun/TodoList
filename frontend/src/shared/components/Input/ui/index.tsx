@@ -6,8 +6,11 @@ import {style} from "./style.ts";
 export const Input = ({className, size, rounded, iconStart, iconEnd, invalid, ...rest}: InputProps) => {
     const styleInput = cn(
         style({size, rounded}),
-        {"border-red-500 hover:border-red-500 focus:ring-red-500/20": invalid},
-        {"pl-10": iconStart, "pr-10": iconEnd,},
+        {
+            "border-red-500 hover:border-red-500 focus:ring-red-500/20": invalid,
+            "pl-10": iconStart,
+            "pr-10": iconEnd
+        },
         className
     )
 
