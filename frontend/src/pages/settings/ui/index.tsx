@@ -16,7 +16,7 @@ const tabSections = [
 
 export const SettingsPage = () => {
     return (
-        <PageLayout className={'flex-1 size-full p-6'}>
+        <PageLayout>
 
             {/* Image background */}
             <div className={'w-full h-auto overflow-hidden'}>
