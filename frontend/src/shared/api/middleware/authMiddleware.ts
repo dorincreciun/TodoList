@@ -10,7 +10,7 @@ const UNPROTECTED_ROUTES = [
 
 export const authMiddleware: Middleware = {
     async onRequest({schemaPath, request}) {
-
+        console.log("🔍 Cerere făcută către:", schemaPath);
         if (UNPROTECTED_ROUTES.some((pathname) => schemaPath.startsWith(pathname))) {
             return undefined;
         }
@@ -19,7 +19,7 @@ export const authMiddleware: Middleware = {
         request.headers.set('Authorization', `Bearer ${accessToken}`)
     },
 
-    async onResponse({ request, response }) {
+    async onResponse({ request, schemaPath, response }) {
         if (response.status === 401) {
             const success = await useAuthStore.getState().update();
 
@@ -28,9 +28,11 @@ export const authMiddleware: Middleware = {
                 return fetch(request.clone());
             }
         }else{
-            useAuthStore.getState().logout?.();
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("refreshToken");
+            if(schemaPath.startsWith('/auth/refresh')){
+                useAuthStore.getState().logout?.();
+                localStorage.removeItem("accessToken");
+                localStorage.removeItem("refreshToken");
+            }
         }
 
         return response;

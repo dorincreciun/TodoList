@@ -2,9 +2,15 @@ import {AtSign, Lock} from "lucide-react";
 import {Input} from "../../../shared/components/Input";
 import {Button} from "../../../shared/components/Button";
 import {withPasswordInput} from "../../../shared/HOC/PasswordInput";
+import {useState} from "react";
+import {useAuthStore} from "../model/hook/useAuthStore";
 
 export const LoginForm = ({changeForm}: { changeForm: () => void }) => {
     const PasswordInput = withPasswordInput(Input);
+    const login = useAuthStore(state => state.login)
+    const update = useAuthStore(state => state.update)
+    const [email, setEmail] = useState<string>('john@example.com')
+    const [password, setPassword] = useState<string>('Password123')
     return (
         <div
             className={'max-w-[480px] w-full mx-auto sm:px-6 py-3 relative z-10 animate-fade-in-scale'}>
@@ -29,6 +35,8 @@ export const LoginForm = ({changeForm}: { changeForm: () => void }) => {
                     </label>
 
                     <Input
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         iconStart={<AtSign size={18}
                                            className="text-[#8899A8] group-focus-within:text-[#5051F9] transition-colors"/>}
                         id="email"
@@ -51,6 +59,8 @@ export const LoginForm = ({changeForm}: { changeForm: () => void }) => {
                     </div>
 
                     <PasswordInput
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         iconStart={<Lock size={18}
                                          className="text-[#8899A8] group-focus-within:text-[#5051F9] transition-colors"/>}
                         id="password"
@@ -63,10 +73,13 @@ export const LoginForm = ({changeForm}: { changeForm: () => void }) => {
                 <div className={'pt-2 mb-8'}>
                     <Button
                         type={'button'}
+                        onClick={() => login(email, password)}
                         className={'w-full py-3 text-base font-semibold bg-gradient-to-r from-[#5051F9] to-[#5051F9]/90 hover:from-[#5051F9]/90 hover:to-[#5051F9] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02]'}
                     >
                         Sign in
                     </Button>
+
+                    <button type={'button'} onClick={() => update()}>test update</button>
                 </div>
             </form>
 
@@ -74,8 +87,8 @@ export const LoginForm = ({changeForm}: { changeForm: () => void }) => {
             <div className="text-center text-sm text-[#94A3B8]">
                 <p>Don't have an account?
                     <button
-                       onClick={changeForm}
-                       className="font-semibold text-[#60A5FA] hover:text-[#38BDF8] transition-colors ms-2 hover:underline">
+                        onClick={changeForm}
+                        className="font-semibold text-[#60A5FA] hover:text-[#38BDF8] transition-colors ms-2 hover:underline">
                         Create account
                     </button>
                 </p>

@@ -10,13 +10,13 @@ export const useAuthStore = create<AuthStoreState & AuthStoreActions>()((set, ge
     return {
         /* Default State */
         isAuthorized: false,
-        accessToken: null,
-        refreshToken: null,
+        accessToken: localStorage.getItem("accessToken") || null,
+        refreshToken: localStorage.getItem("refreshToken") || null,
 
         /* Actions */
         login: (email, password) => userLogin(email, password, set),
         register: userRegister,
         logout: userLogout,
-        update: userUpdate(set, get)
+        update: () => userUpdate(set, get)
     }
 })
