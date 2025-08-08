@@ -70,7 +70,7 @@ npm install
 ### 3. Configurează variabilele de mediu
 Creează un fișier `.env` în directorul rădăcină:
 ```bash
-cp env.example .env
+cp env.example .env.development
 ```
 
 Editează fișierul `.env` cu configurațiile tale:

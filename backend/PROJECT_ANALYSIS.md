@@ -247,7 +247,7 @@ ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000
 ### 1. Setup Proiect
 ```bash
 npm install
-cp env.example .env
+cp env.example .env.development
 # Configurare variabile de mediu
 ```
 

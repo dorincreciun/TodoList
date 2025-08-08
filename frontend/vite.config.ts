@@ -7,10 +7,11 @@ import tailwindcss from '@tailwindcss/vite'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-export default defineConfig(({command}) => {
+
+export default defineConfig(() => {
     return {
         root: __dirname,
-        base: command === 'build' ? '/TodoList/' : '/',
+        base: import.meta.env.VITE_APP_TITLE,
         plugins: [
             react(),
             tailwindcss(),
