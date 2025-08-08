@@ -9,6 +9,6 @@ export type AuthStoreActions = {
     login: (email: string, password: string) => void;
     register: (email: string, password: string) => void;
 
-    update: () => void;
+    update: () => Promise<boolean>;
     logout: () => void;
 }

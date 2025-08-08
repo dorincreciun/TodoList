@@ -6,7 +6,7 @@ import {userLogout} from "../services/userLogout.ts";
 import {userUpdate} from "../services/userUpdate.ts";
 
 // funcția create este chemată de două ori deoarece () prima chemare doar transmite tipul generic fără apelare
-export const useAuthStore = create<AuthStoreState & AuthStoreActions>()((state) => {
+export const useAuthStore = create<AuthStoreState & AuthStoreActions>()((set, get) => {
     return {
         /* Default State */
         isAuthorized: false,
@@ -14,9 +14,9 @@ export const useAuthStore = create<AuthStoreState & AuthStoreActions>()((state) 
         refreshToken: null,
 
         /* Actions */
-        login: userLogin,
+        login: (email, password) => userLogin(email, password, set),
         register: userRegister,
         logout: userLogout,
-        update: userUpdate
+        update: userUpdate(set, get)
     }
 })
