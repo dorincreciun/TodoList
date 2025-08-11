@@ -1,22 +1,34 @@
-import {create} from "zustand";
-import type {AuthStoreActions, AuthStoreState} from "../type/AuthStore.ts";
-import {userLogin} from "../services/userLogin.ts";
-import {userRegister} from "../services/userRegister.ts";
-import {userLogout} from "../services/userLogout.ts";
-import {userUpdate} from "../services/userUpdate.ts";
+import {create, type StateCreator} from "zustand";
+import type {AuthStore, AuthStoreActions, AuthStoreState} from "../type/AuthStore";
 
-// funcția create este chemată de două ori deoarece () prima chemare doar transmite tipul generic fără apelare
-export const useAuthStore = create<AuthStoreState & AuthStoreActions>()((set, get) => {
-    return {
-        /* Default State */
-        isAuthorized: false,
-        accessToken: localStorage.getItem("accessToken") || null,
-        refreshToken: localStorage.getItem("refreshToken") || null,
+/* Services */
+import {login} from "../services/login";
+import {register} from "../services/register";
+import {update} from "../services/update";
+import {logout} from "../services/logout";
 
-        /* Actions */
-        login: (email, password) => userLogin(email, password, set),
-        register: userRegister,
-        logout: userLogout,
-        update: () => userUpdate(set, get)
-    }
-})
+/* Initial state */
+const initialState: AuthStoreState = {
+    isAuthorized: false,
+    authStatus: "idle",
+    fetchStatus: "idle",
+    tokens: {accessToken: null, refreshToken: null},
+};
+
+/* Actions state */
+const actionsState: AuthStoreActions = {
+    login: (credentials) => login(credentials),
+    register: () => register(),
+    update: () => update(),
+    logout: () => logout(),
+}
+
+const authStoreCreator: StateCreator<AuthStore> = () => ({
+    /* Initial state */
+    ...initialState,
+
+    /* Actions state */
+    ...actionsState
+});
+
+export const useAuthStore = create<AuthStore>()(authStoreCreator);
